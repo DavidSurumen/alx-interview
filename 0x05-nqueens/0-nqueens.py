@@ -1,143 +1,92 @@
 #!/usr/bin/python3
-"""
-N Queens puzzle solution module
-"""
+'''N Queens Challenge'''
+
 import sys
-
-
-global N
-
-
-solutions = []
-
-
-def saveSolution(board):
-    """
-    Utility function to save already found solutions for queens'
-    placement.
-
-    board (List): NxN matrix representing the chess board.
-    """
-    sol = []
-    for i in range(N):
-        for j in range(N):
-            if board[i][j] == 1:
-                sol.append([i, j])
-    solutions.append(sol)
-    return solutions
-
-
-def isSafe(board, row, col):
-    """
-    Utility function to check if a queen can be placed on board[row][col].
-
-    Description: This function is called when "col" queens are already placed
-                 in columns from 0 to col - 1, so we need to check only the
-                 left side for attacking queens.
-
-    board (List): NxN matrix representing the chess board.
-    row (int):    the row number for placing the queen.
-    col (int):    the column number for placing the queen.
-
-    Return (bool): False if queen cannot be placed in given row and column,
-                   otherwise True
-    """
-    # check this row on left side
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-
-    # check upper diagonal on left side
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
-    # check lower diagonal on left side
-    for i, j in zip(range(row, N, 1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
-    return True
-
-
-def solveUtil(board, col):
-    """
-    Utility function that carries out the placement of the queens in a
-    chess board.
-
-    board (List): NxN matrix that represents the chess board.
-    col   (int):  the column number for placing each queen.
-
-    Return (bool): True is all the queens have been placed successfully,
-                   otherwise False.
-    """
-    # Base case: if all queens are placed, return true
-    if col >= N:
-        return True
-
-    solved = False
-    # Consider this column and trying placing this queen in all rows one by one
-    for row in range(N):
-        if isSafe(board, row, col):
-            # Place this queen in board[row][col]
-            board[row][col] = 1
-
-            # Recur to place rest of the queens
-            if solveUtil(board, col + 1):
-                if row == N-1:
-                    return True
-                elif col == 0:
-                    saveSolution(board)
-                    solved = True
-                    board = [[0 for _ in range(N)] for _ in range(N)]
-                else:
-                    return True
-
-            # If placing queen in board[row][col] doesn't lead to a solution,
-            # backtrack from board[row][col]
-            board[row][col] = 0
-
-    # If the queen cannot be placed in any row in this column col
-    # then return false. Return true if a previous solution had been found
-    if solved:
-        return True
-    return False
-
-
-def nqueens():
-    """
-    This function solves the N Queens problem using backtracking.
-
-    Description:  It uses solveUtil() utility function to solve the problem,
-                  which places queens in the form of 1s.
-
-    Return (bool): False if queens cannot be placed, otherwise returs True.
-    """
-    board = [[0 for _ in range(N)] for _ in range(N)]
-
-    if not solveUtil(board, 0):
-        print('solution does not exist')
-        return False
-    return True
 
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
-        exit(1)
-
-    N = sys.argv[1]
+        sys.exit(1)
 
     try:
-        N = eval(N)
-    except Exception:
-        print("N must be a number")
+        n = int(sys.argv[1])
+    except ValueError:
+        print('N must be a number')
         exit(1)
 
-    if N < 4:
-        print("N must be at least 4")
+    if n < 4:
+        print('N must be at least 4')
         exit(1)
 
-    if nqueens():
-        for i in solutions:
-            print(i)
+    solutions = []
+    placed_queens = []  # coordinates format [row, column]
+    stop = False
+    r = 0
+    c = 0
+
+    # iterate thru rows
+    while r < n:
+        goback = False
+        # iterate thru columns
+        while c < n:
+            # check is current column is safe
+            safe = True
+            for cord in placed_queens:
+                col = cord[1]
+                if(col == c or col + (r-cord[0]) == c or
+                        col - (r-cord[0]) == c):
+                    safe = False
+                    break
+
+            if not safe:
+                if c == n - 1:
+                    goback = True
+                    break
+                c += 1
+                continue
+
+            # place queen
+            cords = [r, c]
+            placed_queens.append(cords)
+            # if last row, append solution and reset all to last unfinished row
+            # and last safe column in that row
+            if r == n - 1:
+                solutions.append(placed_queens[:])
+                for cord in placed_queens:
+                    if cord[1] < n - 1:
+                        r = cord[0]
+                        c = cord[1]
+                for i in range(n - r):
+                    placed_queens.pop()
+                if r == n - 1 and c == n - 1:
+                    placed_queens = []
+                    stop = True
+                r -= 1
+                c += 1
+            else:
+                c = 0
+            break
+        if stop:
+            break
+        # on fail: go back to previous row
+        # and continue from last safe column + 1
+        if goback:
+            r -= 1
+            while r >= 0:
+                c = placed_queens[r][1] + 1
+                del placed_queens[r]  # delete previous queen coordinates
+                if c < n:
+                    break
+                r -= 1
+            if r < 0:
+                break
+            continue
+        r += 1
+
+    for idx, val in enumerate(solutions):
+        if idx == len(solutions) - 1:
+            print(val, end='')
+        else:
+            print(val)
+    print('\n')
