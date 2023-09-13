@@ -126,9 +126,11 @@ if __name__ == '__main__':
         print("Usage: nqueens N")
         exit(1)
 
-    N = int(sys.argv[1])
+    N = sys.argv[1]
 
-    if type(N) is not int:
+    try:
+        N = eval(N)
+    except Exception:
         print("N must be a number")
         exit(1)
 
