@@ -1,4 +1,14 @@
 #!/usr/bin/node
+/**
+ * Script that prints all characters of a Star Wars movie. It takes
+ * 1 command line arguement as Movie ID.
+ *
+ * Usage:
+ *    ./0-starwars_characters.js [arguments]
+ *
+ * @author David Surumen
+ */
+
 const request = require('request');
 const API_URL = 'https://swapi-api.alx-tools.com/api';
 
