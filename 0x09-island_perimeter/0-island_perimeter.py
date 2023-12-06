@@ -1,6 +1,7 @@
+#!/usr/bin/python3
 def island_perimeter(grid):
     perimeter = 0
-    
+
     # Iterate through each cell in the grid
     for i in range(len(grid)):
         for j in range(len(grid[0])):
