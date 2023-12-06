@@ -1,5 +1,15 @@
 #!/usr/bin/python3
+"""
+This module defines the function island_perimeter which finds the
+perimeter of an island completely surrounded by water.
+"""
+
+
 def island_perimeter(grid):
+    """
+    Returns the perimeter of an island represented by the matrix 'grid',
+    where 0 represents water and 1 represents land.
+    """
     perimeter = 0
 
     # Iterate through each cell in the grid
