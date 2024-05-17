@@ -11,7 +11,12 @@ def isWinner(x, nums):
     """
     ben = 0
     maria = 0
+    if x < 1:
+        return None
+
     for n in nums:
+        if nums.index(n) == x:
+            break
         prime = [True for i in range(n+1)]
         p = 2
         while (p*p <= n):
