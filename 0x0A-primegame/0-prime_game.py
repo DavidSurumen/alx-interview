@@ -2,16 +2,19 @@
 """
 Game of prime numbers. Contains one function -isWinner
 """
+
+
 def isWinner(x, nums):
     """
-    Returns the winner of the game, where two players take turns finding a prime number.
+    Returns the winner of the game, where two players take turns
+    finding a prime number.
     """
     ben = 0
     maria = 0
     for n in nums:
         prime = [True for i in range(n+1)]
         p = 2
-        while(p*p <= n):
+        while (p*p <= n):
             if prime[p]:
                 for i in range(p*p, n+1, p):
                     prime[i] = False
